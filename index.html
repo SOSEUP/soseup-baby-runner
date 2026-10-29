@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>소중한습관 아기 키우기 게임</title>
+<style>
+:root{--blue:#72c9f5;--deep:#239bdc;--pale:#effaff;--pink:#ff9fbd;--ink:#28516c}
+*{box-sizing:border-box} html,body{margin:0;min-height:100%;font-family:"Arial","Malgun Gothic",sans-serif;color:var(--ink);background:linear-gradient(180deg,#dff5ff,#fff7fb);touch-action:manipulation}
+body{display:flex;justify-content:center;align-items:center;padding:12px}
+.app{width:min(100%,480px);min-height:min(94dvh,900px);background:#fff;border:3px solid #c5ebff;border-radius:28px;overflow:hidden;box-shadow:0 12px 40px #8ac9e544;position:relative}
+header{padding:16px 18px 12px;text-align:center;background:linear-gradient(135deg,#d8f3ff,#fff0f6);border-bottom:1px solid #e2f5ff}
+.logo{font-size:clamp(23px,6vw,31px);font-weight:900;color:#239bdc;letter-spacing:-1px}.tag{font-size:12px;color:#6aa6c8;margin-top:4px}
+.page{display:none;padding:20px 18px 22px}.page.active{display:block}
+h1{font-size:25px;text-align:center;margin:10px 0 8px;color:#218fc9}h2{font-size:19px;margin:8px 0 12px;text-align:center}
+.lead{text-align:center;color:#6e9ab2;line-height:1.6;font-size:14px}
+label{font-size:14px;font-weight:700;display:block;margin:18px 0 8px}
+input[type=text]{width:100%;padding:14px;border:2px solid #c8eaff;border-radius:14px;font-size:16px;outline:none}
+.gender{display:flex;gap:12px}.gender button{flex:1;border:2px solid #d5edfb;border-radius:18px;padding:14px 8px;background:#f7fcff;font-size:15px;color:var(--ink)}.gender button.selected{border-color:#58b9ed;background:#e5f7ff;box-shadow:0 0 0 3px #d5f2ff}.avatar{font-size:46px;display:block;margin-bottom:5px}
+.btn{border:0;border-radius:999px;padding:14px 18px;width:100%;font-size:17px;font-weight:800;color:white;background:linear-gradient(90deg,#6dc9f6,#299fe0);box-shadow:0 5px 0 #168ac7;margin-top:20px;cursor:pointer}.btn:active{transform:translateY(2px);box-shadow:0 3px 0 #168ac7}.btn.secondary{background:#fff;color:#299fe0;border:2px solid #b9e7ff;box-shadow:none}
+.rules{display:grid;gap:10px;margin:18px 0}.rule{display:flex;align-items:center;gap:12px;background:#f4fbff;border-radius:14px;padding:11px 12px;font-size:14px;line-height:1.4}.icon{font-size:27px;width:38px;text-align:center}
+.note{background:#fff6fb;border:1px solid #ffe0ec;border-radius:14px;padding:12px;font-size:12px;line-height:1.6;color:#9c6c82}
+.game-page{padding:0}.hud{display:flex;justify-content:space-between;gap:6px;padding:10px;background:#f0faff;font-size:12px;font-weight:800}.pill{background:#fff;border:1px solid #c9edff;border-radius:12px;padding:8px 9px;flex:1;text-align:center}
+#gameCanvas{display:block;width:100%;height:auto;background:#d9f4ff;touch-action:none}
+.game-controls{padding:12px 18px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px;background:#fff}.control-group{display:grid;grid-template-columns:repeat(3,48px);grid-template-rows:repeat(2,43px);gap:5px}.key{border:1px solid #a8def9;border-radius:12px;background:#eaf8ff;color:#208fc9;font-size:20px;font-weight:bold;box-shadow:0 3px 0 #b4e2f9;touch-action:none}.key:active{background:#bfeaff;transform:translateY(2px);box-shadow:none}.key.up{grid-column:2;grid-row:1}.key.left{grid-column:1;grid-row:2}.key.down{grid-column:2;grid-row:2}.key.right{grid-column:3;grid-row:2}.control-help{font-size:11px;line-height:1.6;color:#77a3bb;flex:1}
+.overlay{position:absolute;inset:0;background:#f5fcfff0;display:none;align-items:center;justify-content:center;padding:24px;z-index:5}.overlay.show{display:flex}.modal{background:white;border:2px solid #bfe8ff;border-radius:24px;padding:24px 20px;text-align:center;width:100%;box-shadow:0 10px 30px #69b8e433}.big-emoji{font-size:66px}.modal h2{font-size:25px;color:#2298d7}.modal p{line-height:1.6;font-size:14px}
+footer{text-align:center;padding:9px;font-size:10px;color:#9bbdce;background:#f7fcff}
+@media(max-height:760px){.app{min-height:96dvh}.page{padding-top:12px;padding-bottom:14px}.avatar{font-size:36px}h1{font-size:22px}.btn{margin-top:13px;padding:12px}.rules{gap:6px;margin:10px 0}.rule{padding:8px}.game-controls{padding:8px 12px}.control-group{grid-template-columns:repeat(3,42px);grid-template-rows:repeat(2,36px)}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div class="logo">🩵 소중한습관</div><div class="tag">작은 습관이 만드는 우리 아기의 성장!</div></header>
+
+<section class="page active" id="page1">
+<h1>아기 키우기 게임</h1><p class="lead">우리 아기의 이름을 지어주고<br>함께 신나는 모험을 시작해요!</p>
+<label for="babyName">👶 아기 이름</label><input id="babyName" type="text" maxlength="10" placeholder="예: 하늘이" value="하늘이">
+<label>💙 아기 성별 선택</label>
+<div class="gender"><button type="button" id="boyBtn" class="selected" onclick="selectGender('boy')"><span class="avatar">👶🏻</span>남자 아기</button><button type="button" id="girlBtn" onclick="selectGender('girl')"><span class="avatar">👧🏻</span>여자 아기</button></div>
+<button class="btn" onclick="goPage(2)">아기 만들기 완료 →</button>
+</section>
+
+<section class="page" id="page2">
+<h1>게임 방법</h1><p class="lead">달리면서 코인을 모아 아기를 성장시켜 주세요!</p>
+<div class="rules">
+<div class="rule"><span class="icon">💗</span><span><b>하트 코인</b><br>경험치 +1점</span></div>
+<div class="rule"><span class="icon">🧴</span><span><b>성장 아이템</b><br>페이즈별 특별 아이템은 경험치 +2점</span></div>
+<div class="rule"><span class="icon">⭐</span><span><b>반짝 별 코인</b><br>희귀 아이템 경험치 +5점</span></div>
+<div class="rule"><span class="icon">💩</span><span><b>마이너스 아이템</b><br>똥 -1점, 콜라/화장품 -5점! 피해 주세요.</span></div>
+</div>
+<div class="note">성장 단계: 신생아 0점 → 걷는 아기 50점 → 어린이 150점 → 청소년 300점 → 미션 성공 450점</div>
+<button class="btn" onclick="startGame()">▶ 바로 시작하기</button>
+<button class="btn secondary" onclick="goPage(1)">아기 설정으로 돌아가기</button>
+</section>
+
+<section class="page game-page" id="page3">
+<div class="hud"><div class="pill" id="hudName">👶 하늘이</div><div class="pill" id="hudPhase">신생아</div><div class="pill" id="hudExp">💗 0 / 450</div></div>
+<canvas id="gameCanvas" width="420" height="610" aria-label="러너 게임"></canvas>
+<div class="game-controls">
+<div class="control-group">
+<button class="key up" data-action="jump" aria-label="점프">▲</button>
+<button class="key left" data-action="left" aria-label="왼쪽">◀</button>
+<button class="key down" data-action="slide" aria-label="슬라이딩">▼</button>
+<button class="key right" data-action="right" aria-label="오른쪽">▶</button>
+</div>
+<div class="control-help">방향키로 좌우 이동<br>▲ 점프 · ▼ 슬라이딩<br>코인은 모으고 장애물은 피하기!</div>
+</div>
+</section>
+<div class="overlay" id="overlay"><div class="modal"><div class="big-emoji" id="modalEmoji">🎉</div><h2 id="modalTitle">미션 성공!</h2><p id="modalText"></p><button class="btn" id="modalMain" onclick="restartFromModal()">다시 키우기</button><button class="btn secondary" onclick="goPage(1);hideOverlay()">처음으로</button></div></div>
+<footer>SOSEUP · 소중한습관 아기 키우기 게임</footer>
+</div>
+<script>
+const canvas=document.getElementById('gameCanvas'),ctx=canvas.getContext('2d');
+let gender='boy',name='하늘이',exp=0,phase=0,playerLane=1,objects=[],frame=0,speed=3.1,running=false,raf=0,jump=0,slide=0,invuln=0;
+const lanes=[105,210,315];
+const phases=[
+ {name:'신생아',min:0,item:'🧴',bg:'#dff5ff'},
+ {name:'걷는 아기',min:50,item:'🧻',bg:'#e3f8ff'},
+ {name:'어린이',min:150,item:'🥛',bg:'#e7f9ec'},
+ {name:'청소년',min:300,item:'🩵',bg:'#f0edff'}
+];
+function selectGender(g){gender=g;document.getElementById('boyBtn').classList.toggle('selected',g==='boy');document.getElementById('girlBtn').classList.toggle('selected',g==='girl')}
+function goPage(n){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('page'+n).classList.add('active');if(n!==3)stopGame()}
+function hideOverlay(){document.getElementById('overlay').classList.remove('show')}
+function startGame(){name=document.getElementById('babyName').value.trim()||'아기';exp=0;phase=0;playerLane=1;objects=[];frame=0;speed=3.1;jump=0;slide=0;invuln=0;hideOverlay();goPage(3);running=true;updateHud();cancelAnimationFrame(raf);loop()}
+function stopGame(){running=false;cancelAnimationFrame(raf)}
+function restartFromModal(){hideOverlay();startGame()}
+function updateHud(){document.getElementById('hudName').textContent=(gender==='boy'?'👶🏻 ':'👧🏻 ')+name;phase=exp>=300?3:exp>=150?2:exp>=50?1:0;document.getElementById('hudPhase').textContent=phases[phase].name;document.getElementById('hudExp').textContent='💗 '+exp+' / 450'}
+function addExp(n){exp=Math.max(0,exp+n);updateHud();if(exp>=450){exp=450;updateHud();winGame()}}
+function winGame(){running=false;document.getElementById('modalEmoji').textContent='🎉';document.getElementById('modalTitle').textContent='미션 성공!';document.getElementById('modalText').textContent=name+'가 경험치 450점을 달성하고 청소년으로 성장했어요! 함께해 줘서 고마워요 🩵';document.getElementById('modalMain').textContent='다시 키우기';document.getElementById('overlay').classList.add('show')}
+function loseHit(){if(invuln>0)return;invuln=35;addExp(-1)}
+function action(a){if(!running)return;if(a==='left')playerLane=Math.max(0,playerLane-1);if(a==='right')playerLane=Math.min(2,playerLane+1);if(a==='jump'&&jump===0)jump=26;if(a==='slide')slide=24}
+document.querySelectorAll('[data-action]').forEach(b=>{b.addEventListener('pointerdown',e=>{e.preventDefault();action(b.dataset.action)})});
+window.addEventListener('keydown',e=>{const map={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'jump',ArrowDown:'slide',' ':'jump'};if(map[e.key]){e.preventDefault();action(map[e.key])}});
+let touchX=null;canvas.addEventListener('touchstart',e=>{touchX=e.touches[0].clientX},{passive:true});canvas.addEventListener('touchend',e=>{if(touchX===null)return;let dx=e.changedTouches[0].clientX-touchX;if(Math.abs(dx)>25)action(dx<0?'left':'right');else action('jump');touchX=null},{passive:true});
+function spawn(){let r=Math.random(),lane=Math.floor(Math.random()*3),type;if(r<.57)type='heart';else if(r<.68)type='bonus';else if(r<.73)type='rare';else if(r<.91)type='poop';else type='bad';objects.push({lane,y:-35,type,hit:false})}
+function drawBackground(){let p=phases[phase];ctx.fillStyle=p.bg;ctx.fillRect(0,0,420,610);
+ctx.fillStyle='#fff';for(let i=0;i<5;i++){let x=(i*103-frame*.35%500+500)%500-30;ctx.beginPath();ctx.arc(x,85+(i%2)*30,22,0,Math.PI*2);ctx.arc(x+22,76+(i%2)*30,28,0,Math.PI*2);ctx.arc(x+48,88+(i%2)*30,20,0,Math.PI*2);ctx.fill()}
+ctx.fillStyle='#b6e6f7';ctx.beginPath();ctx.moveTo(48,0);ctx.lineTo(372,0);ctx.lineTo(420,610);ctx.lineTo(0,610);ctx.closePath();ctx.fill();
+ctx.fillStyle='#dff5ff';ctx.beginPath();ctx.moveTo(78,0);ctx.lineTo(342,0);ctx.lineTo(390,610);ctx.lineTo(30,610);ctx.closePath();ctx.fill();
+ctx.strokeStyle='#b5e4f7';ctx.lineWidth=3;ctx.setLineDash([18,16]);ctx.beginPath();ctx.moveTo(140,-(frame*1.8%34));ctx.lineTo(150,610);ctx.moveTo(280,-(frame*1.8%34));ctx.lineTo(270,610);ctx.stroke();ctx.setLineDash([]);
+for(let i=0;i<4;i++){let y=(i*175+frame*1.1)%650;ctx.fillStyle='#a7dced';ctx.fillRect(8,y,18,36);ctx.fillRect(394,y+55,18,36)}
+}
+function drawBaby(x,y){ctx.save();ctx.translate(x,y-(jump>0?Math.sin((26-jump)/26*Math.PI)*55:0));if(invuln>0&&frame%6<3)ctx.globalAlpha=.45;
+ctx.fillStyle='#fff';ctx.beginPath();ctx.ellipse(0,17,24,28,0,0,Math.PI*2);ctx.fill();
+ctx.fillStyle=gender==='boy'?'#6ec9f4':'#ffb3cb';ctx.beginPath();ctx.roundRect(-22,-5,44,42,13);ctx.fill();
+ctx.fillStyle='#f8d3b6';ctx.beginPath();ctx.arc(0,-23,24,0,Math.PI*2);ctx.fill();
+ctx.fillStyle='#6c4c40';ctx.beginPath();ctx.arc(0,-32,23,Math.PI,Math.PI*2);ctx.fill();ctx.fillRect(-22,-34,8,15);ctx.fillRect(14,-34,8,15);
+if(gender==='girl'){ctx.fillStyle='#ff82ad';ctx.beginPath();ctx.arc(19,-39,7,0,Math.PI*2);ctx.arc(26,-39,7,0,Math.PI*2);ctx.fill()}
+ctx.fillStyle='#533c35';ctx.beginPath();ctx.arc(-8,-23,2.8,0,Math.PI*2);ctx.arc(8,-23,2.8,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#b86e69';ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,-16,6,.15,Math.PI-.15);ctx.stroke();
+ctx.fillStyle='#f4b4a7';ctx.beginPath();ctx.arc(-14,-16,4,0,Math.PI*2);ctx.arc(14,-16,4,0,Math.PI*2);ctx.fill();
+ctx.strokeStyle='#f8d3b6';ctx.lineWidth=8;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(-18,8);ctx.lineTo(-27,19);ctx.moveTo(18,8);ctx.lineTo(27,19);ctx.stroke();
+ctx.restore()}
+function drawObject(o){let x=lanes[o.lane],y=o.y;ctx.textAlign='center';ctx.textBaseline='middle';let em={heart:'💗',bonus:phases[phase].item,rare:'⭐',poop:'💩',bad:phase===2?'🥤':'💄'}[o.type];ctx.font='31px "Apple Color Emoji","Segoe UI Emoji",sans-serif';ctx.fillText(em,x,y);if(o.type==='bonus'||o.type==='rare'){ctx.font='bold 11px Arial';ctx.fillStyle='#238fc8';ctx.fillText(o.type==='rare'?'+5':'+2',x,y+24)}}
+function loop(){if(!running)return;frame++;if(jump>0)jump--;if(slide>0)slide--;if(invuln>0)invuln--;if(frame%42===0)spawn();if(frame%600===0)speed=Math.min(5,speed+.15);
+drawBackground();objects.forEach(o=>{o.y+=speed;if(!o.hit&&o.y>470&&o.y<530&&o.lane===playerLane){o.hit=true;if(o.type==='heart')addExp(1);if(o.type==='bonus')addExp(2);if(o.type==='rare')addExp(5);if(o.type==='poop')loseHit();if(o.type==='bad')addExp(-5)}if(!o.hit)drawObject(o)});objects=objects.filter(o=>o.y<650);
+drawBaby(lanes[playerLane],490);ctx.fillStyle='#ffffffcc';ctx.fillRect(12,12,130,31);ctx.fillStyle='#268fc5';ctx.font='bold 13px Arial';ctx.textAlign='left';ctx.fillText('✨ '+phases[phase].name,22,32);
+raf=requestAnimationFrame(loop)}
+// roundedRect fallback
+if(!CanvasRenderingContext2D.prototype.roundRect){CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){this.beginPath();this.moveTo(x+r,y);this.arcTo(x+w,y,x+w,y+h,r);this.arcTo(x+w,y+h,x,y+h,r);this.arcTo(x,y+h,x,y,r);this.arcTo(x,y,x+w,y,r);this.closePath();return this}}
+</script>
+</body></html>
